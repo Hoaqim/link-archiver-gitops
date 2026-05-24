@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: link-archiver-dev
+
+resources:
+  - ../../base
+
+images:
+  - name: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/api
+    newTag: dev-latest
+  - name: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/worker
+    newTag: dev-latest
+
+configMapGenerator:
+  - name: link-archiver-env
+    literals:
+      - HTTP_SERVER_ADDR=:8080
+      - AWS_REGION=eu-central-1
+      - SQS_QUEUE_URL=https://sqs.eu-central-1.amazonaws.com/137583030918/link-archiver-dev
+      - S3_BUCKET=link-archiver-dev
+
+patches:
+  - target:
+      kind: ServiceAccount
+      name: link-archiver-api
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          eks.amazonaws.com/role-arn: arn:aws:iam::137583030918:role/link-archiver-api-dev
+  - target:
+      kind: ServiceAccount
+      name: link-archiver-worker
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          eks.amazonaws.com/role-arn: arn:aws:iam::137583030918:role/link-archiver-worker-dev
+  - target:
+      kind: Ingress
+      name: api
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: api.example.com
