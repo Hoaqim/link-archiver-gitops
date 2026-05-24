@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: link-archiver
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            namespace: link-archiver-dev
+          - env: prod
+            namespace: link-archiver-prod
+  template:
+    metadata:
+      name: link-archiver-{{.env}}
+    spec:
+      project: link-archiver
+      source:
+        repoURL: https://github.com/Hoaqim/link-archiver-gitops
+        targetRevision: main
+        path: apps/link-archiver/overlays/{{.env}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
