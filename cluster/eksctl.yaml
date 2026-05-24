@@ -1,0 +1,29 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: link-archiver
+  region: eu-central-1
+  version: "1.30"
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+  - name: workers-spot
+    instanceType: t3.small
+    spot: true
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 3
+    volumeSize: 20
+    volumeType: gp3
+    labels:
+      role: worker
+    tags:
+      Project: link-archiver
+
+addons:
+  - name: vpc-cni
+  - name: coredns
+  - name: kube-proxy
