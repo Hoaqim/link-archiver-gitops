@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: link-archiver
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: link-archiver app — api and worker, per-env
+
+  sourceRepos:
+    - https://github.com/Hoaqim/link-archiver-gitops
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: link-archiver-*
+
+  clusterResourceWhitelist: []
+
+  namespaceResourceWhitelist:
+    - { group: "",                kind: ConfigMap }
+    - { group: "",                kind: Service }
+    - { group: "",                kind: ServiceAccount }
+    - { group: apps,              kind: Deployment }
+    - { group: networking.k8s.io, kind: Ingress }
+
+  orphanedResources:
+    warn: true   
