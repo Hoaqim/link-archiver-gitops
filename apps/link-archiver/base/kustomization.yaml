@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kinda: Kustomization
+
+resources: 
+  - api-deployment.yaml
+  - api-service.yaml
+  - api-ingress.yaml
+  - api-serviceaccount.yaml
+  - worker-deployment.yaml
+  - worker-serviceaccount.yaml
+
+labels:
+  - pairs:
+    app.kubernetes.io/namme: link-archiver
+    app.kubernetes.io/part-of: link-archiver
+  includeSelectors: false

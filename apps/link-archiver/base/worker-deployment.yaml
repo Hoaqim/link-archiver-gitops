@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: link-archiver-worker
+  template:
+    metadata:
+      labels:
+        app: link-archiver-worker
+    spec:
+      serviceAccountName: link-archiver-worker
+      containers:
+        - name: worker
+          image: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/worker
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: link-archiver-env
+          resources:
+            requests: { cpu: 50m,  memory: 64Mi }
+            limits:   { cpu: 200m, memory: 128Mi }
