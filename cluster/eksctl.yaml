@@ -8,6 +8,78 @@ metadata:
 
 iam:
   withOIDC: true
+  serviceAccounts:
+    - metadata: { name: cert-manager, namespace: cert-manager }
+      roleName: cert-manager-irsa
+      roleOnly: true
+      attachPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: [route53:ChangeResourceRecordSets]
+            Resource: arn:aws:route53:::hostedzone/*
+          - Effect: Allow
+            Action:
+              - route53:ListHostedZones
+              - route53:ListResourceRecordSets
+              - route53:ListTagsForResource
+            Resource: "*"
+
+    - metadata: { name: external-dns, namespace: external-dns }
+      roleName: external-dns-irsa
+      roleOnly: true
+      attachPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: [route53:ChangeResourceRecordSets]
+            Resource: arn:aws:route53:::hostedzone/*
+          - Effect: Allow
+            Action:
+              - route53:ListHostedZones
+              - route53:ListResourceRecordSets
+              - route53:ListTagsForResource
+            Resource: "*"
+
+    - metadata: { name: argocd-image-updater, namespace: argocd }
+      roleName: argocd-image-updater-irsa
+      roleOnly: true
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
+
+    - metadata: { name: link-archiver-api, namespace: link-archiver-dev }
+      roleName: link-archiver-api-dev
+      roleOnly: true
+      attachPolicy: &appPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: [sqs:SendMessage, sqs:ReceiveMessage, sqs:DeleteMessage, sqs:GetQueueAttributes]
+            Resource: arn:aws:sqs:eu-central-1:*:link-archiver-*
+          - Effect: Allow
+            Action: [s3:PutObject, s3:GetObject, s3:HeadObject]
+            Resource: arn:aws:s3:::link-archiver-*/*
+          - Effect: Allow
+            Action: [s3:ListBucket]
+            Resource: arn:aws:s3:::link-archiver-*
+
+    - metadata: { name: link-archiver-worker, namespace: link-archiver-dev }
+      roleName: link-archiver-worker-dev
+      roleOnly: true
+      attachPolicy: *appPolicy
+
+    - metadata: { name: link-archiver-api, namespace: link-archiver-prod }
+      roleName: link-archiver-api-prod
+      roleOnly: true
+      attachPolicy: *appPolicy
+
+    - metadata: { name: link-archiver-worker, namespace: link-archiver-prod }
+      roleName: link-archiver-worker-prod
+      roleOnly: true
+      attachPolicy: *appPolicy
+
+
 
 managedNodeGroups:
   - name: workers-spot
@@ -26,6 +98,6 @@ managedNodeGroups:
 addons:
   - name: vpc-cni
   - name: coredns
-  - name: kube-
+  - name: kube-proxy
   - name: aws-ebs-csi-driver
   - name: aws-load-balancer-controller
