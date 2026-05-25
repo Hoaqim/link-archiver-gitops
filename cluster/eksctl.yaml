@@ -26,4 +26,6 @@ managedNodeGroups:
 addons:
   - name: vpc-cni
   - name: coredns
-  - name: kube-proxy
+  - name: kube-
+  - name: aws-ebs-csi-driver
+  - name: aws-load-balancer-controller
