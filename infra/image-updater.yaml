@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-image-updater
+  namespace: argocd
+spec:
+  project: infra
+  source:
+    chart: argocd-image-updater
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 0.11.0
+    helm:
+      values: |
+        config:
+          registries:
+            - name: ECR
+              api_url: https://137583030918.dkr.ecr.eu-central-1.amazonaws.com
+              prefix: 137583030918.dkr.ecr.eu-central-1.amazonaws.com
+              ping: yes
+              insecure: no
+              credentials: ext:/scripts/ecr-login.sh
+              credexpire: 10h
+          # AWS CLI baked in so the ECR login helper works
+          gitCommitUser: argocd-image-updater
+          gitCommitMail: argocd-image-updater@bot.local
+        serviceAccount:
+          create: true
+          name: argocd-image-updater
+          annotations:
+            eks.amazonaws.com/role-arn: arn:aws:iam::137583030918:role/argocd-image-updater-irsa
+        # Git credentials (PAT) loaded from a manually-created Secret.
+        # See "Manual secret" section below — NOT in gitops repo for obvious reasons.
+        authScripts:
+          enabled: true
+          scripts:
+            ecr-login.sh: |
+              #!/bin/sh
+              aws ecr --region eu-central-1 get-authorization-token \
+                --output text --query 'authorizationData[].authorizationToken' \
+                | base64 -d
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

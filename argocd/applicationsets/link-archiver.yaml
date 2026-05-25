@@ -14,6 +14,14 @@ spec:
   template:
     metadata:
       name: link-archiver-{{.env}}
+      annotations:
+        argocd-image-updater.argoproj.io/image-list: |
+          api=137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/api,worker=137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/worker
+        argocd-image-updater.argoproj.io/api.update-strategy: semver
+        argocd-image-updater.argoproj.io/worker.update-strategy: semver
+        argocd-image-updater.argoproj.io/write-back-method: git
+        argocd-image-updater.argoproj.io/git-branch: 'image-updater/{{.env}}-{{`{{.Image.Name}}`}}'
+        argocd-image-updater.argoproj.io/write-back-target: kustomization
     spec:
       project: link-archiver
       source:
