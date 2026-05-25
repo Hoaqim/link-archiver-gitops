@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  project: infra
+  source:
+    chart: external-dns
+    repoURL: https://kubernetes-sigs.github.io/external-dns/
+    targetRevision: 1.15.0
+    helm:
+      values: |
+        provider: aws
+        aws:
+          region: eu-central-1
+          zoneType: public
+        domainFilters:
+          - link-archiver.dev   # PLACEHOLDER — only manage records for your zone
+        policy: sync             
+        sources:
+          - ingress
+        txtOwnerId: link-archiver-cluster
+        serviceAccount:
+          create: true
+          name: external-dns
+          annotations:
+            eks.amazonaws.com/role-arn: arn:aws:iam::137583030918:role/external-dns-irsa
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-dns
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
