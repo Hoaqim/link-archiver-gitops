@@ -43,4 +43,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/rules/0/host
-        value: api.example.com
+        value: api.link-archiver.dev
