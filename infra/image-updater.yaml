@@ -19,7 +19,7 @@ spec:
               ping: yes
               insecure: no
               credentials: ext:/scripts/ecr-login.sh
-              credexpire: 10h
+              credsexpire: 10h
           # AWS CLI baked in so the ECR login helper works
           gitCommitUser: argocd-image-updater
           gitCommitMail: argocd-image-updater@bot.local
