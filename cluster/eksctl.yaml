@@ -45,6 +45,12 @@ iam:
       roleName: link-archiver-worker-prod
       roleOnly: true
       attachPolicy: *appPolicy
+    
+    - metadata: { name: aws-load-balancer-controller, namespace: kube-system }
+      roleName: aws-load-balancer-controller-irsa
+      roleOnly: true
+      wellKnownPolicies:
+        awsLoadBalancerController: true
 
 managedNodeGroups:
   - name: workers-spot
@@ -65,4 +71,3 @@ addons:
   - name: coredns
   - name: kube-proxy
   - name: aws-ebs-csi-driver
-  - name: aws-load-balancer-controller
