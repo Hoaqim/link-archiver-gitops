@@ -20,7 +20,6 @@ spec:
         argocd-image-updater.argoproj.io/api.update-strategy: semver
         argocd-image-updater.argoproj.io/worker.update-strategy: semver
         argocd-image-updater.argoproj.io/write-back-method: git
-        argocd-image-updater.argoproj.io/git-branch: 'image-updater/{{.env}}-{{`{{.Image.Name}}`}}'
         argocd-image-updater.argoproj.io/write-back-target: kustomization
     spec:
       project: link-archiver
