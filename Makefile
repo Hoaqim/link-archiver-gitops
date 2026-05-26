@@ -1,7 +1,7 @@
 ARGOCD_CHART_VERSION ?= 7.7.5  
 
 .PHONY: cluster-up cluster-down argocd-install argocd-root \
-        argocd-port-forward argocd-password help
+        argocd-port-forward  help
 
 help:
 	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -13,7 +13,6 @@ cluster-up:
 	@echo
 	@echo "Cluster up. Next:"
 	@echo "  make argocd-port-forward    # in one terminal"
-	@echo "  make argocd-password        # in another"
 
 cluster-down: 
 	eksctl delete cluster -f cluster/eksctl.yaml

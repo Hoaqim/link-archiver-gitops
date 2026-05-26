@@ -1,52 +1,11 @@
-apiVersion: eksctl.io/v1alpha5
-kind: ClusterConfig
-
-metadata:
-  name: link-archiver
-  region: eu-central-1
-  version: "1.30"
-
 iam:
   withOIDC: true
   serviceAccounts:
-    - metadata: { name: cert-manager, namespace: cert-manager }
-      roleName: cert-manager-irsa
-      roleOnly: true
-      attachPolicy:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Action: [route53:ChangeResourceRecordSets]
-            Resource: arn:aws:route53:::hostedzone/*
-          - Effect: Allow
-            Action:
-              - route53:ListHostedZones
-              - route53:ListResourceRecordSets
-              - route53:ListTagsForResource
-            Resource: "*"
-
-    - metadata: { name: external-dns, namespace: external-dns }
-      roleName: external-dns-irsa
-      roleOnly: true
-      attachPolicy:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Action: [route53:ChangeResourceRecordSets]
-            Resource: arn:aws:route53:::hostedzone/*
-          - Effect: Allow
-            Action:
-              - route53:ListHostedZones
-              - route53:ListResourceRecordSets
-              - route53:ListTagsForResource
-            Resource: "*"
-
     - metadata: { name: argocd-image-updater, namespace: argocd }
       roleName: argocd-image-updater-irsa
       roleOnly: true
       attachPolicyARNs:
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-
 
     - metadata: { name: link-archiver-api, namespace: link-archiver-dev }
       roleName: link-archiver-api-dev
@@ -78,26 +37,3 @@ iam:
       roleName: link-archiver-worker-prod
       roleOnly: true
       attachPolicy: *appPolicy
-
-
-
-managedNodeGroups:
-  - name: workers-spot
-    instanceType: t3.small
-    spot: true
-    desiredCapacity: 2
-    minSize: 1
-    maxSize: 3
-    volumeSize: 20
-    volumeType: gp3
-    labels:
-      role: worker
-    tags:
-      Project: link-archiver
-
-addons:
-  - name: vpc-cni
-  - name: coredns
-  - name: kube-proxy
-  - name: aws-ebs-csi-driver
-  - name: aws-load-balancer-controller

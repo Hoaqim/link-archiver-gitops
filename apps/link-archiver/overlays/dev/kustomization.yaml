@@ -28,7 +28,7 @@ patches:
       - op: add
         path: /metadata/annotations
         value:
-          eks.amazonaws.com/role-arn: arn:aws:iam::137583030918:role/link-archiver-api-dev
+          eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/link-archiver-api-dev
   - target:
       kind: ServiceAccount
       name: link-archiver-worker
@@ -36,7 +36,7 @@ patches:
       - op: add
         path: /metadata/annotations
         value:
-          eks.amazonaws.com/role-arn: arn:aws:iam::137583030918:role/link-archiver-worker-dev
+          eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/link-archiver-worker-dev
   - target:
       kind: Ingress
       name: api
