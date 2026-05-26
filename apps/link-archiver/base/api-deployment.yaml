@@ -15,7 +15,7 @@ spec:
       serviceAccountName: link-archiver-api
       containers:
         - name: api
-          image: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/api
+          image: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/myapp/api
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

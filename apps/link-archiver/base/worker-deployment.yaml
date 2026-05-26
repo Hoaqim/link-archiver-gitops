@@ -15,7 +15,7 @@ spec:
       serviceAccountName: link-archiver-worker
       containers:
         - name: worker
-          image: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/worker
+          image: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/myapp/worker
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

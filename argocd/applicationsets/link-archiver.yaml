@@ -18,7 +18,7 @@ spec:
       name: link-archiver-{{.env}}
       annotations:
         argocd-image-updater.argoproj.io/image-list: |
-          api=137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/api,worker=137583030918.dkr.ecr.eu-central-1.amazonaws.com/link-archiver/worker
+          api=137583030918.dkr.ecr.eu-central-1.amazonaws.com/myapp/api,worker=137583030918.dkr.ecr.eu-central-1.amazonaws.com/myapp/worker
         argocd-image-updater.argoproj.io/api.update-strategy: semver
         argocd-image-updater.argoproj.io/worker.update-strategy: semver
         argocd-image-updater.argoproj.io/write-back-method: git
