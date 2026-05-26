@@ -8,9 +8,9 @@ resources:
 
 images:
   - name: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/myapp/api
-    newTag: 0.1.0
+    newTag: 0.1.1
   - name: 137583030918.dkr.ecr.eu-central-1.amazonaws.com/myapp/worker
-    newTag: 0.1.0
+    newTag: 0.1.1
 
 configMapGenerator:
   - name: link-archiver-env
