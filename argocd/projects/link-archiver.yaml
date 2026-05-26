@@ -15,8 +15,9 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: link-archiver-*
 
-  clusterResourceWhitelist: []
-
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
   namespaceResourceWhitelist:
     - { group: "",                kind: ConfigMap }
     - { group: "",                kind: Service }
